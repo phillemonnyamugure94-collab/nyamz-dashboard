@@ -295,14 +295,7 @@ export default function Home() {
 
   return (
     <div style={{minHeight:'100vh',fontFamily:'DM Sans,Arial,sans-serif'}}>
-      <style>{'
-        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-        @keyframes toastIn{from{opacity:0;transform:translateX(80px)}to{opacity:1;transform:none}}
-        body{background:#F0F2F8}
-        *{box-sizing:border-box}
-        ::-webkit-scrollbar{width:5px;height:5px}
-        ::-webkit-scrollbar-thumb{background:#C5CAE0;border-radius:3px}
-      '}</style>
+      <style>{'@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}} @keyframes toastIn{from{opacity:0;transform:translateX(80px)}to{opacity:1;transform:none}} body{background:#F0F2F8} *{box-sizing:border-box} ::-webkit-scrollbar{width:5px;height:5px} ::-webkit-scrollbar-thumb{background:#C5CAE0;border-radius:3px}'}</style>
 
       {toast&&(
         <div style={{position:'fixed',top:66,right:18,zIndex:9999,padding:'11px 18px',borderRadius:12,fontWeight:600,fontSize:13,
