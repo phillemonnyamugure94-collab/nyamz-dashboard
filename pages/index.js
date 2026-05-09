@@ -192,18 +192,16 @@ export default function Home() {
   function exportCSV() {
     if(!responses.length){alert('No data yet!');return}
     const headers=Object.keys(responses[0])
-    const escape=v=>{
-      if(Array.isArray(v))return v.join('|')
-      return String(v==null?'':v)
-    }
-    const rows=responses.map(r=>headers.map(h=>{
-      const val=escape(r[h])
-      return '"'+val.replace(/"/g,'""')+'"'
-    }).join(','))
-    const csv=headers.join(',')+'
-'+rows.join('
-')
-    const blob=new Blob([csv],{type:'text/csv'})
+    const lines=[headers.join(',')]
+    responses.forEach(r=>{
+      const row=headers.map(h=>{
+        const v=r[h]
+        const s=Array.isArray(v)?v.join('|'):(v==null?'':String(v))
+        return '"'+s.replace(/"/g,'""')+'"'
+      })
+      lines.push(row.join(','))
+    })
+    const blob=new Blob([lines.join('\n')],{type:'text/csv'})
     const url=URL.createObjectURL(blob)
     const a=document.createElement('a')
     a.href=url
@@ -297,14 +295,14 @@ export default function Home() {
 
   return (
     <div style={{minHeight:'100vh',fontFamily:'DM Sans,Arial,sans-serif'}}>
-      <style>{`
+      <style>{'
         @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
         @keyframes toastIn{from{opacity:0;transform:translateX(80px)}to{opacity:1;transform:none}}
         body{background:#F0F2F8}
         *{box-sizing:border-box}
         ::-webkit-scrollbar{width:5px;height:5px}
         ::-webkit-scrollbar-thumb{background:#C5CAE0;border-radius:3px}
-      `}</style>
+      '}</style>
 
       {toast&&(
         <div style={{position:'fixed',top:66,right:18,zIndex:9999,padding:'11px 18px',borderRadius:12,fontWeight:600,fontSize:13,
