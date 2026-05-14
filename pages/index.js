@@ -142,10 +142,21 @@ export default function Home() {
       q43_cooperation:form.q43_cooperation,q44_dwelling:form.q44_dwelling,
       enumerator_code:form.enumerator_code||null,
     }
-    const {error}=await supabase.from('responses').insert([payload])
-    if(error){setSubmitStatus('error:'+(error.message.includes('unique')?'Questionnaire number already exists!':error.message))}
-    else{setSubmitStatus('success:Response saved! / Mhinduro yasungirirwa!');setForm({q14_models:[]});fetchData()}
-    setTimeout(()=>setSubmitStatus(''),5000)
+    try{
+      const {data,error}=await supabase.from('responses').insert([payload]).select()
+      if(error){
+        console.error('Insert error:',error)
+        setSubmitStatus('error:'+(error.message.includes('unique')?'Questionnaire number already exists!':error.code==='42703'?'Column missing in database - run SQL migration':'Error: '+error.message))
+      } else{
+        setSubmitStatus('success:Response saved! / Mhinduro yasungirirwa!')
+        setForm({q14_models:[]})
+        fetchData()
+      }
+    }catch(err){
+      console.error('Submit error:',err)
+      setSubmitStatus('error:Connection error - check internet')
+    }
+    setTimeout(()=>setSubmitStatus(''),6000)
   }
 
   async function addEnumerator(){
@@ -253,9 +264,9 @@ export default function Home() {
           </div>
 
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:14,marginBottom:14}}>
-            <div style={S.card}>
+            <div style={{...S.card,minHeight:240}}>
               <div style={S.label}><span>Gender Split</span><span style={S.labelLine}/></div>
-              {genderData.length>0?<ResponsiveContainer width='100%' height={160}><PieChart><Pie data={genderData} cx='50%' cy='50%' innerRadius={45} outerRadius={65} dataKey='value' paddingAngle={3} label={({name,percent})=>name+' '+(percent*100).toFixed(0)+'%'} labelLine={false} fontSize={9}>{genderData.map((d,i)=><Cell key={i} fill={d.color}/>)}</Pie><Tooltip content={<CT/>}/></PieChart></ResponsiveContainer>:<div style={{height:160,display:'flex',alignItems:'center',justifyContent:'center',color:C.dim,fontSize:12}}>No data</div>}
+              {genderData.length>0?<ResponsiveContainer width='100%' height={200}><PieChart><Pie data={genderData} cx='50%' cy='50%' innerRadius={50} outerRadius={72} dataKey='value' paddingAngle={3} label={({name,percent})=>name+' '+(percent*100).toFixed(0)+'%'} labelLine={true} fontSize={11}>{genderData.map((d,i)=><Cell key={i} fill={d.color}/>)}</Pie><Tooltip content={<CT/>}/></PieChart></ResponsiveContainer>:<div style={{height:160,display:'flex',alignItems:'center',justifyContent:'center',color:C.dim,fontSize:12}}>No data</div>}
             </div>
             <div style={S.card}>
               <div style={S.label}><span>Risk Scores</span><span style={S.labelLine}/></div>
