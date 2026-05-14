@@ -16,7 +16,7 @@ const C = {
 const WC = [C.indigo,C.cyan,C.green,C.amber,C.pink]
 const WARDS = ['Chapoto (Ward 1)','Chitsungo (Ward 10)','Masoka (Ward 11)','Gonono (Ward 4)','Mahuwe (Ward 15)']
 const FUND_LABELS = {contract:'Contract',mfi:'MFI Loan',gmb_scheme:'GMB',arda:'ARDA',cooperative:'Coop',govt_subsidy:'Subsidy',agro_credit:'Agro-dealer',informal:'Informal'}
-const RISK_QS = [{id:'q21_drought',label:'Drought'},{id:'q22_hwc',label:'HWC'},{id:'q23_latedisb',label:'Late Disb.'},{id:'q24_repay',label:'Repayment'},{id:'q25_price',label:'Price Risk'},{id:'q26_trust',label:'Trust'},{id:'q27_govt',label:'Govt Support'}]
+const RISK_QS = [{id:'q18_drought',label:'Drought'},{id:'q19_hwc',label:'HWC'},{id:'q20_latedisbursement',label:'Late Disb.'},{id:'q21_repayability',label:'Repayment'},{id:'q22_pricefluctuation',label:'Price Risk'},{id:'q23_trust',label:'Trust'},{id:'q24_govtsupport',label:'Govt Support'}]
 const ROLES = {admin:{label:'Phillemon Nyamgure',sub:'Nyamz Analytics — Full Control',pw:'nyamz2026',color:C.red,icon:'P'},supervisor:{label:'PhD Supervisor',sub:'View dashboard only',pw:'super2026',color:C.cyan,icon:'S'},sydney:{label:'Sydney Mazambara',sub:'Researcher — Field + View',pw:'mbire2026',color:C.green,icon:'M'},enumerator:{label:'Enumerator',sub:'Data entry only',pw:'enum2026',color:C.amber,icon:'E'}}
 
 const S = {
@@ -84,8 +84,8 @@ export default function Home() {
   const total=responses.length
   const pct=parseFloat(((total/460)*100).toFixed(1))
   const femHH=responses.filter(r=>r.q4_hhhead==='female_headed').length
-  const useFund=responses.filter(r=>r.q16_usefunding==='yes').length
-  const isInc=r=>!r.q1_sex||!r.q16_usefunding||!r.q21_drought
+  const useFund=responses.filter(r=>r.q13_usefunding==='yes').length
+  const isInc=r=>!r.q1_sex||!r.q13_usefunding||!r.q18_drought
   const incomplete=responses.filter(isInc)
   const enumerators=users.filter(u=>u.role==='enumerator')
 
@@ -121,25 +121,44 @@ export default function Home() {
       questionnaire_no:form.questionnaire_no,ward:form.ward,
       q1_sex:form.q1_sex,q2_age:form.q2_age,q3_education:form.q3_education,
       q4_hhhead:form.q4_hhhead,q5_farmsize:form.q5_farmsize,q6_experience:form.q6_experience,
-      q7_hhsize:form.q7_hhsize,q8_seedvariety:form.q8_seedvariety,
-      q9_prodmethod:form.q9_prodmethod,q10_landprop:form.q10_landprop,
-      q11_yield:form.q11_yield,q12_pctsold:form.q12_pctsold,
-      q13_market:form.q13_market,q14_pricefluc:form.q14_pricefluc,
-      q15_planting:form.q15_planting,q16_usefunding:form.q16_usefunding,
-      q17_models:form.q14_models,q18_fundtiming:form.q18_fundtiming,
-      q19_fundstage:form.q19_fundstage,q20_barrier:form.q20_barrier,
-      q21_drought:parseInt(form.q21_drought)||null,q22_hwc:parseInt(form.q22_hwc)||null,
-      q23_latedisb:parseInt(form.q23_latedisb)||null,q24_repay:parseInt(form.q24_repay)||null,
-      q25_price:parseInt(form.q25_price)||null,q26_trust:parseInt(form.q26_trust)||null,
-      q27_govt:parseInt(form.q27_govt)||null,q28_coop:parseInt(form.q28_coop)||null,
-      q29_extension:parseInt(form.q29_extension)||null,q30_community:parseInt(form.q30_community)||null,
-      q31_mobile:parseInt(form.q31_mobile)||null,q32_digital:parseInt(form.q32_digital)||null,
-      q33_landowner:form.q33_landowner,q34_femchallenge:parseInt(form.q34_femchallenge)||null,
-      q35_cultural:parseInt(form.q35_cultural)||null,q36_femproduct:parseInt(form.q36_femproduct)||null,
-      q37_femdecision:parseInt(form.q37_femdecision)||null,q38_bundled:parseInt(form.q38_bundled)||null,
-      q39_riskpool:parseInt(form.q39_riskpool)||null,q40_cropins:parseInt(form.q40_cropins)||null,
-      q41_digital_trust:parseInt(form.q41_digital_trust)||null,q42_history:parseInt(form.q42_history)||null,
-      q43_cooperation:form.q43_cooperation,q44_dwelling:form.q44_dwelling,
+      q7_hhsize:form.q7_hhsize,
+      q8_seedvariety:form.q8_seedvariety||null,
+      q9_prodmethod:form.q9_prodmethod||null,
+      q10_landprop:form.q10_landprop||null,
+      q9_yield:form.q11_yield||null,
+      q10_pctsold:form.q12_pctsold||null,
+      q11_market:form.q13_market||null,
+      q12_planting:form.q15_planting||null,
+      q13_usefunding:form.q16_usefunding||null,
+      q14_models:form.q14_models||[],
+      q15_fundtiming:form.q18_fundtiming||null,
+      q14_pricefluc:form.q14_pricefluc||null,
+      q19_fundstage:form.q19_fundstage||null,
+      q16_barrier:form.q20_barrier||null,
+      q18_drought:parseInt(form.q21_drought)||null,
+      q19_hwc:parseInt(form.q22_hwc)||null,
+      q20_latedisbursement:parseInt(form.q23_latedisb)||null,
+      q21_repayability:parseInt(form.q24_repay)||null,
+      q22_pricefluctuation:parseInt(form.q25_price)||null,
+      q23_trust:parseInt(form.q26_trust)||null,
+      q24_govtsupport:parseInt(form.q27_govt)||null,
+      q25_cooperative:parseInt(form.q28_coop)||null,
+      q26_extension:parseInt(form.q29_extension)||null,
+      q27_community:parseInt(form.q30_community)||null,
+      q28_mobile:parseInt(form.q31_mobile)||null,
+      q29_digital:parseInt(form.q32_digital)||null,
+      q30_landowner:form.q33_landowner||null,
+      q31_femchallenge:parseInt(form.q34_femchallenge)||null,
+      q32_cultural:parseInt(form.q35_cultural)||null,
+      q33_femproduct:parseInt(form.q36_femproduct)||null,
+      q34_femdecision:parseInt(form.q37_femdecision)||null,
+      q35_bundled:parseInt(form.q38_bundled)||null,
+      q36_riskpool:parseInt(form.q39_riskpool)||null,
+      q37_cropinsurance:parseInt(form.q40_cropins)||null,
+      q38_digital_trust:parseInt(form.q41_digital_trust)||null,
+      q39_history:parseInt(form.q42_history)||null,
+      q40_cooperation:form.q43_cooperation||null,
+      q41_dwelling:form.q44_dwelling||null,
       enumerator_code:form.enumerator_code||null,
     }
     try{
@@ -248,7 +267,7 @@ export default function Home() {
           </div>
 
           <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:14}}>
-            {[{l:'Avg Drought Score',v:total?(responses.reduce((s,r)=>s+(r.q21_drought||0),0)/total).toFixed(1):'--',c:C.amber},{l:'HWC Impact (avg)',v:total?(responses.reduce((s,r)=>s+(r.q22_hwc||0),0)/total).toFixed(1):'--',c:C.red},{l:'Incomplete Records',v:incomplete.length,c:incomplete.length>0?C.red:C.green},{l:'Wards Active',v:[...new Set(responses.map(r=>r.ward))].filter(Boolean).length+' / 5',c:C.violet}].map((s,i)=>(<div key={i} style={{...S.card,borderLeft:'3px solid '+s.c}}><div style={{fontSize:10,color:C.sub,textTransform:'uppercase',letterSpacing:'0.7px',fontWeight:500,marginBottom:4}}>{s.l}</div><div style={{fontSize:22,fontWeight:800,color:s.c,fontFamily:'DM Mono,monospace'}}>{s.v}</div></div>))}
+            {[{l:'Avg Drought Score',v:total?(responses.reduce((s,r)=>s+(r.q18_drought||0),0)/total).toFixed(1):'--',c:C.amber},{l:'HWC Impact (avg)',v:total?(responses.reduce((s,r)=>s+(r.q19_hwc||0),0)/total).toFixed(1):'--',c:C.red},{l:'Incomplete Records',v:incomplete.length,c:incomplete.length>0?C.red:C.green},{l:'Wards Active',v:[...new Set(responses.map(r=>r.ward))].filter(Boolean).length+' / 5',c:C.violet}].map((s,i)=>(<div key={i} style={{...S.card,borderLeft:'3px solid '+s.c}}><div style={{fontSize:10,color:C.sub,textTransform:'uppercase',letterSpacing:'0.7px',fontWeight:500,marginBottom:4}}>{s.l}</div><div style={{fontSize:22,fontWeight:800,color:s.c,fontFamily:'DM Mono,monospace'}}>{s.v}</div></div>))}
           </div>
 
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:14}}>
@@ -281,13 +300,13 @@ export default function Home() {
           <div style={{...S.card,marginBottom:14}}>
             <div style={S.label}><span>Key Performance Indicators</span><span style={S.labelLine}/><span style={{fontSize:9,background:'rgba(16,185,129,0.12)',border:'1px solid rgba(16,185,129,0.2)',color:C.green,padding:'2px 8px',borderRadius:20,fontWeight:600}}>Auto-refresh 30s</span></div>
             <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}}>
-              {[['Female-headed HH',total?Math.round(femHH/total*100)+'%':'--',C.pink],['Using formal funding',total?Math.round(useFund/total*100)+'%':'--',C.green],['HWC impact (avg 4+)',total?Math.round(responses.filter(r=>r.q22_hwc>=4).length/total*100)+'%':'--',C.red],['Late disbursement (4+)',total?Math.round(responses.filter(r=>r.q23_latedisb>=4).length/total*100)+'%':'--',C.amber],['Avg trust score',total?(responses.reduce((s,r)=>s+(r.q26_trust||0),0)/total).toFixed(1)+'/5':'--',C.cyan],['Avg govt support',total?(responses.reduce((s,r)=>s+(r.q27_govt||0),0)/total).toFixed(1)+'/5':'--',C.indigo],['Incomplete records',incomplete.length,incomplete.length>0?C.red:C.green],['Wards covered',[...new Set(responses.map(r=>r.ward))].filter(Boolean).length+'/5',C.violet],['Active enumerators',enumerators.filter(e=>e.is_active).length,C.cyan]].map(([l,v,c],i)=>(<div key={i} style={{padding:'10px 12px',background:'rgba(255,255,255,0.02)',borderRadius:8,borderLeft:'2px solid '+c}}><div style={{fontSize:9,color:C.sub,textTransform:'uppercase',letterSpacing:'0.5px',fontWeight:500,marginBottom:3}}>{l}</div><div style={{fontSize:18,fontWeight:800,color:c,fontFamily:'DM Mono,monospace'}}>{v}</div></div>))}
+              {[['Female-headed HH',total?Math.round(femHH/total*100)+'%':'--',C.pink],['Using formal funding',total?Math.round(useFund/total*100)+'%':'--',C.green],['HWC impact (avg 4+)',total?Math.round(responses.filter(r=>r.q19_hwc>=4).length/total*100)+'%':'--',C.red],['Late disbursement (4+)',total?Math.round(responses.filter(r=>r.q20_latedisbursement>=4).length/total*100)+'%':'--',C.amber],['Avg trust score',total?(responses.reduce((s,r)=>s+(r.q23_trust||0),0)/total).toFixed(1)+'/5':'--',C.cyan],['Avg govt support',total?(responses.reduce((s,r)=>s+(r.q24_govtsupport||0),0)/total).toFixed(1)+'/5':'--',C.indigo],['Incomplete records',incomplete.length,incomplete.length>0?C.red:C.green],['Wards covered',[...new Set(responses.map(r=>r.ward))].filter(Boolean).length+'/5',C.violet],['Active enumerators',enumerators.filter(e=>e.is_active).length,C.cyan]].map(([l,v,c],i)=>(<div key={i} style={{padding:'10px 12px',background:'rgba(255,255,255,0.02)',borderRadius:8,borderLeft:'2px solid '+c}}><div style={{fontSize:9,color:C.sub,textTransform:'uppercase',letterSpacing:'0.5px',fontWeight:500,marginBottom:3}}>{l}</div><div style={{fontSize:18,fontWeight:800,color:c,fontFamily:'DM Mono,monospace'}}>{v}</div></div>))}
             </div>
           </div>
 
           <div style={S.card}>
             <div style={{...S.label,marginBottom:12}}><span>Recent Submissions</span><span style={S.labelLine}/></div>
-            {responses.length===0?<div style={{textAlign:'center',color:C.dim,padding:40,fontSize:13}}>No responses yet — share the Collect link with enumerators!</div>:responses.slice(0,8).map(r=>(<div key={r.id} style={{display:'flex',gap:10,padding:'9px 12px',background:isInc(r)?'rgba(239,68,68,0.04)':'rgba(255,255,255,0.02)',borderRadius:8,marginBottom:6,border:'1px solid '+(isInc(r)?'rgba(239,68,68,0.15)':C.border)}}><div style={{width:8,height:8,borderRadius:'50%',background:isInc(r)?C.red:r.q1_sex==='female'?C.pink:C.indigo,marginTop:4,flexShrink:0}}/><div style={{flex:1}}><div style={{fontSize:11,fontWeight:700,display:'flex',alignItems:'center',gap:8}}>{r.questionnaire_no+' - '+r.ward}{isInc(r)&&<span style={{background:'rgba(239,68,68,0.15)',color:C.red,fontSize:9,padding:'1px 7px',borderRadius:20,fontWeight:600}}>Incomplete</span>}</div><div style={{fontSize:10,color:C.sub,marginTop:2}}>{(r.q1_sex||'?')+' - '+(r.q4_hhhead||'').replace(/_/g,' ')+' - Funding: '+(r.q16_usefunding||'--')+' - Drought: '+(r.q21_drought||'--')+'/5 - HWC: '+(r.q22_hwc||'--')+'/5'}</div><div style={{fontSize:9,color:C.dim,marginTop:2,fontFamily:'DM Mono,monospace'}}>{new Date(r.submitted_at).toLocaleString()}</div></div></div>))}
+            {responses.length===0?<div style={{textAlign:'center',color:C.dim,padding:40,fontSize:13}}>No responses yet — share the Collect link with enumerators!</div>:responses.slice(0,8).map(r=>(<div key={r.id} style={{display:'flex',gap:10,padding:'9px 12px',background:isInc(r)?'rgba(239,68,68,0.04)':'rgba(255,255,255,0.02)',borderRadius:8,marginBottom:6,border:'1px solid '+(isInc(r)?'rgba(239,68,68,0.15)':C.border)}}><div style={{width:8,height:8,borderRadius:'50%',background:isInc(r)?C.red:r.q1_sex==='female'?C.pink:C.indigo,marginTop:4,flexShrink:0}}/><div style={{flex:1}}><div style={{fontSize:11,fontWeight:700,display:'flex',alignItems:'center',gap:8}}>{r.questionnaire_no+' - '+r.ward}{isInc(r)&&<span style={{background:'rgba(239,68,68,0.15)',color:C.red,fontSize:9,padding:'1px 7px',borderRadius:20,fontWeight:600}}>Incomplete</span>}</div><div style={{fontSize:10,color:C.sub,marginTop:2}}>{(r.q1_sex||'?')+' - '+(r.q4_hhhead||'').replace(/_/g,' ')+' - Funding: '+(r.q13_usefunding||'--')+' - Drought: '+(r.q21_drought||'--')+'/5 - HWC: '+(r.q19_hwc||'--')+'/5'}</div><div style={{fontSize:9,color:C.dim,marginTop:2,fontFamily:'DM Mono,monospace'}}>{new Date(r.submitted_at).toLocaleString()}</div></div></div>))}
           </div>
         </div>}
 
@@ -389,9 +408,9 @@ export default function Home() {
                   <td style={{padding:'8px 10px',color:C.sub}}>{r.q1_sex||'--'}</td>
                   <td style={{padding:'8px 10px',color:C.sub,fontSize:10}}>{(r.q4_hhhead||'--').replace(/_/g,' ')}</td>
                   <td style={{padding:'8px 10px',color:C.sub}}>{r.q5_farmsize||'--'}</td>
-                  <td style={{padding:'8px 10px',color:C.sub}}>{r.q16_usefunding||'--'}</td>
-                  <td style={{padding:'8px 10px',textAlign:'center',fontWeight:700,color:C.text}}>{r.q21_drought?r.q21_drought+'/5':'--'}</td>
-                  <td style={{padding:'8px 10px',textAlign:'center',color:C.sub}}>{r.q22_hwc?r.q22_hwc+'/5':'--'}</td>
+                  <td style={{padding:'8px 10px',color:C.sub}}>{r.q13_usefunding||'--'}</td>
+                  <td style={{padding:'8px 10px',textAlign:'center',fontWeight:700,color:C.text}}>{r.q18_drought?r.q18_drought+'/5':'--'}</td>
+                  <td style={{padding:'8px 10px',textAlign:'center',color:C.sub}}>{r.q19_hwc?r.q19_hwc+'/5':'--'}</td>
                   <td style={{padding:'8px 10px',fontSize:9,fontFamily:'DM Mono,monospace',color:C.dim,whiteSpace:'nowrap'}}>{new Date(r.submitted_at).toLocaleDateString()}</td>
                   <td style={{padding:'8px 10px'}}><button style={{padding:'3px 8px',background:'rgba(239,68,68,0.1)',border:'1px solid rgba(239,68,68,0.2)',borderRadius:6,fontSize:9,color:C.red,cursor:'pointer',fontFamily:'inherit'}} onClick={()=>setDeleteModal({title:'Delete this response?',message:'Delete questionnaire '+r.questionnaire_no+'? Cannot be undone.',details:'Ward: '+r.ward+' - '+new Date(r.submitted_at).toLocaleDateString(),action:()=>deleteOne(r.id)})}>Del</button></td>
                 </tr>)})}
