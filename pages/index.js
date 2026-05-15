@@ -118,13 +118,15 @@ export default function Home() {
     e.preventDefault()
     if(!form.ward||!form.questionnaire_no){setSubmitStatus('error:Fill in Ward and Questionnaire Number');return}
     const payload={
-      questionnaire_no:form.questionnaire_no,ward:form.ward,
-      q1_sex:form.q1_sex,q2_age:form.q2_age,q3_education:form.q3_education,
-      q4_hhhead:form.q4_hhhead,q5_farmsize:form.q5_farmsize,q6_experience:form.q6_experience,
-      q7_hhsize:form.q7_hhsize,
-      q8_seedvariety:form.q8_seedvariety||null,
-      q9_prodmethod:form.q9_prodmethod||null,
-      q10_landprop:form.q10_landprop||null,
+      questionnaire_no:form.questionnaire_no,
+      ward:form.ward,
+      q1_sex:form.q1_sex||null,
+      q2_age:form.q2_age||null,
+      q3_education:form.q3_education||null,
+      q4_hhhead:form.q4_hhhead||null,
+      q5_farmsize:form.q5_farmsize||null,
+      q6_experience:form.q6_experience||null,
+      q7_hhsize:form.q7_hhsize||null,
       q9_yield:form.q11_yield||null,
       q10_pctsold:form.q12_pctsold||null,
       q11_market:form.q13_market||null,
@@ -132,8 +134,6 @@ export default function Home() {
       q13_usefunding:form.q16_usefunding||null,
       q14_models:form.q14_models||[],
       q15_fundtiming:form.q18_fundtiming||null,
-      q14_pricefluc:form.q14_pricefluc||null,
-      q19_fundstage:form.q19_fundstage||null,
       q16_barrier:form.q20_barrier||null,
       q18_drought:parseInt(form.q21_drought)||null,
       q19_hwc:parseInt(form.q22_hwc)||null,
@@ -147,32 +147,47 @@ export default function Home() {
       q27_community:parseInt(form.q30_community)||null,
       q28_mobile:parseInt(form.q31_mobile)||null,
       q29_digital:parseInt(form.q32_digital)||null,
-      q30_landowner:form.q33_landowner||null,
       q31_femchallenge:parseInt(form.q34_femchallenge)||null,
       q32_cultural:parseInt(form.q35_cultural)||null,
       q33_femproduct:parseInt(form.q36_femproduct)||null,
       q34_femdecision:parseInt(form.q37_femdecision)||null,
       q35_bundled:parseInt(form.q38_bundled)||null,
       q36_riskpool:parseInt(form.q39_riskpool)||null,
-      q37_cropinsurance:parseInt(form.q40_cropins)||null,
       q38_digital_trust:parseInt(form.q41_digital_trust)||null,
+      enumerator_code:form.enumerator_code||null,
+      q8_seedvariety:form.q8_seedvariety||null,
+      q9_prodmethod:form.q9_prodmethod||null,
+      q10_landprop:form.q10_landprop||null,
+      q14_pricefluc:form.q14_pricefluc||null,
+      q19_fundstage:form.q19_fundstage||null,
+      q30_landowner:form.q33_landowner||null,
+      q37_cropinsurance:parseInt(form.q40_cropins)||null,
       q39_history:parseInt(form.q42_history)||null,
       q40_cooperation:form.q43_cooperation||null,
       q41_dwelling:form.q44_dwelling||null,
-      enumerator_code:form.enumerator_code||null,
+    }
+    const newCols=['q8_seedvariety','q9_prodmethod','q10_landprop','q14_pricefluc','q19_fundstage','q30_landowner','q37_cropinsurance','q39_history','q40_cooperation','q41_dwelling']
+    async function tryInsert(p){
+      const {data,error}=await supabase.from('responses').insert([p]).select()
+      return {data,error}
     }
     try{
-      const {data,error}=await supabase.from('responses').insert([payload]).select()
+      let {data,error}=await tryInsert(payload)
+      if(error&&(error.code==='42703'||error.message.includes('column'))){
+        const safe={...payload}
+        newCols.forEach(k=>delete safe[k])
+        const r2=await tryInsert(safe)
+        data=r2.data;error=r2.error
+      }
       if(error){
-        console.error('Insert error:',error)
-        setSubmitStatus('error:'+(error.message.includes('unique')?'Questionnaire number already exists!':error.code==='42703'?'Column missing in database - run SQL migration':'Error: '+error.message))
-      } else{
+        setSubmitStatus('error:'+(error.message.includes('unique')?'Questionnaire number already exists!':'Error: '+error.message))
+      }else{
         setSubmitStatus('success:Response saved! / Mhinduro yasungirirwa!')
         setForm({q14_models:[]})
+        document.querySelectorAll('select').forEach(s=>{if(s.id!=='fWard')s.value=''})
         fetchData()
       }
     }catch(err){
-      console.error('Submit error:',err)
       setSubmitStatus('error:Connection error - check internet')
     }
     setTimeout(()=>setSubmitStatus(''),6000)
