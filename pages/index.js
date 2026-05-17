@@ -263,6 +263,7 @@ export default function Home() {
         </div>
         <div style={{display:'flex',gap:8,alignItems:'center'}}>
           {incomplete.length>0&&role==='admin'&&<div style={{background:C.red,color:'#fff',padding:'3px 10px',borderRadius:20,fontSize:10,fontWeight:700,cursor:'pointer'}} onClick={()=>setTab('manage')}>{'! '+incomplete.length+' incomplete'}</div>}
+          <a href='/qualitative' style={{background:'rgba(99,102,241,0.15)',color:'#6366f1',border:'1px solid rgba(99,102,241,0.3)',borderRadius:20,padding:'4px 12px',fontSize:11,fontWeight:600,textDecoration:'none'}}>Qualitative AI</a>
           <div style={{background:ROLES[role].color,color:'#fff',padding:'4px 12px',borderRadius:20,fontSize:11,fontWeight:700}}>{ROLES[role].label}</div>
           <button style={{background:'rgba(255,255,255,0.06)',color:'rgba(255,255,255,0.7)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:20,padding:'4px 12px',fontSize:11,cursor:'pointer',fontFamily:'inherit'}} onClick={()=>setView('login')}>Sign out</button>
         </div>
