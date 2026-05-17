@@ -71,7 +71,7 @@ function buildWordFreq(text) {
   const words = text.toLowerCase().match(/\b[a-z]{4,}\b/g) || []
   const freq = {}
   words.forEach(w => { if(!stops.has(w)) freq[w]=(freq[w]||0)+1 })
-  return Object.entries(freq).sort((a,b)=>b[1]-a[1])
+  return Object.entries(freq).sort(function(a,b){return b[1]-a[1]})
 }
 
 export default function QualPage() {
@@ -191,7 +191,7 @@ export default function QualPage() {
   sessions.forEach(s=>Object.entries(s.themes).forEach(([t,c])=>{allThemeCounts[t]=(allThemeCounts[t]||0)+c}))
   const maxTheme = Math.max(1,...Object.values(allThemeCounts))
   const allWords = sessions.flatMap(s=>s.wordFreq||[]).reduce((acc,[w,c])=>{acc[w]=(acc[w]||0)+c;return acc},{})
-  const topWords = Object.entries(allWords).sort((a,b)=>b[1]-a[1]).slice(0,40)
+  const topWords = Object.entries(allWords).sort(function(a,b){return b[1]-a[1]}).slice(0,40)
   const maxWord = topWords[0]?.[1]||1
   const filteredQuotes = qFilter==='all' ? allQuotes : allQuotes.filter(q=>q.theme===qFilter)
 
@@ -335,7 +335,7 @@ export default function QualPage() {
                 </div>
                 <div style={S.card}>
                   <div style={{...S.label,marginBottom:10}}><span>Theme distribution in this session</span><span style={S.labelLine}/></div>
-                  {Object.entries(selSession.themes).sort((a,b)=>b[1]-a[1]).map(([t,c])=>{const max=Math.max(...Object.values(selSession.themes));return(<div key={t} style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}><div style={{fontSize:11,color:C.sub,width:160,flexShrink:0}}>{THEME_NAMES[t]}</div><div style={{flex:1,height:8,background:'rgba(255,255,255,0.05)',borderRadius:4,overflow:'hidden'}}><div style={{height:'100%',width:Math.round(c/max*100)+'%',background:THEME_COLORS[t],borderRadius:4,transition:'width 0.8s'}}/></div><div style={{fontSize:10,fontFamily:'DM Mono,monospace',color:C.text,width:20,textAlign:'right'}}>{c}</div></div>)})
+                  {Object.entries(selSession.themes).sort(function(a,b){return b[1]-a[1]}).map(function(entry){const t=entry[0];const c=entry[1];const max=Math.max.apply(null,Object.values(selSession.themes));return(<div key={t} style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}><div style={{fontSize:11,color:C.sub,width:160,flexShrink:0}}>{THEME_NAMES[t]}</div><div style={{flex:1,height:8,background:'rgba(255,255,255,0.05)',borderRadius:4,overflow:'hidden'}}><div style={{height:'100%',width:Math.round(c/max*100)+'%',background:THEME_COLORS[t],borderRadius:4,transition:'width 0.8s'}}/></div><div style={{fontSize:10,fontFamily:'DM Mono,monospace',color:C.text,width:20,textAlign:'right'}}>{c}</div></div>)})}
                 </div>
               </>):<div style={{...S.card,textAlign:'center',padding:40,color:C.dim,fontSize:13}}>Select a session from the list to view its transcript</div>}
             </div>
@@ -347,7 +347,7 @@ export default function QualPage() {
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:14}}>
             <div style={S.card}>
               <div style={{...S.label,marginBottom:12}}><span>Theme frequency — all sessions</span><span style={S.labelLine}/></div>
-              {Object.entries(allThemeCounts).sort((a,b)=>b[1]-a[1]).map(([t,c])=>(<div key={t} style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}><div style={{fontSize:11,color:C.sub,width:170,flexShrink:0}}>{THEME_NAMES[t]}</div><div style={{flex:1,height:10,background:'rgba(255,255,255,0.05)',borderRadius:5,overflow:'hidden'}}><div style={{height:'100%',width:Math.round(c/maxTheme*100)+'%',background:THEME_COLORS[t],boxShadow:'0 0 4px '+THEME_COLORS[t]+'44',borderRadius:5,transition:'width 0.8s'}}/></div><div style={{fontSize:11,fontFamily:'DM Mono,monospace',color:C.text,width:24,textAlign:'right'}}>{c}</div></div>))}
+              {Object.entries(allThemeCounts).sort(function(a,b){return b[1]-a[1]}).map(function(entry){const t=entry[0];const c=entry[1];return(<div key={t} style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}><div style={{fontSize:11,color:C.sub,width:170,flexShrink:0}}>{THEME_NAMES[t]}</div><div style={{flex:1,height:10,background:'rgba(255,255,255,0.05)',borderRadius:5,overflow:'hidden'}}><div style={{height:'100%',width:Math.round(c/maxTheme*100)+'%',background:THEME_COLORS[t],boxShadow:'0 0 4px '+THEME_COLORS[t]+'44',borderRadius:5,transition:'width 0.8s'}}/></div><div style={{fontSize:11,fontFamily:'DM Mono,monospace',color:C.text,width:24,textAlign:'right'}}>{c}</div></div>))}
             </div>
             <div style={S.card}>
               <div style={{...S.label,marginBottom:12}}><span>Theme sentiment (positive / neutral / negative)</span><span style={S.labelLine}/></div>
