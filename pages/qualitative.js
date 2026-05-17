@@ -195,6 +195,25 @@ export default function QualPage() {
   const maxWord = topWords[0]?.[1]||1
   const filteredQuotes = qFilter==='all' ? allQuotes : allQuotes.filter(q=>q.theme===qFilter)
 
+  const kwicTerms = ['funding','drought','wildlife','women','collateral','loan','cooperative','government','risk','insurance','planting','cultural','credit','repay']
+  const kwicAllText = sessions.map(s=>s.transcript).join(' ')
+  const kwicSentences = kwicAllText.split(/[.!?]+/).filter(s=>s.trim().length>15)
+  const kwicRaw = []
+  kwicTerms.forEach(function(term){
+    const match = kwicSentences.find(function(s){return s.toLowerCase().includes(term)})
+    if(match) kwicRaw.push({term:term,context:match.trim()})
+  })
+  const kwicResults = kwicRaw.slice(0,10).map(function(r,i){
+    const theme = Object.entries(THEME_KEYWORDS).find(function(entry){return entry[1].includes(r.term)})
+    const col = theme?THEME_COLORS[theme[0]]:C.sub
+    const ctxLower = r.context.toLowerCase()
+    const termIdx = ctxLower.indexOf(r.term)
+    const before = termIdx>=0 ? r.context.slice(0,termIdx) : r.context
+    const matchStr = termIdx>=0 ? r.context.slice(termIdx,termIdx+r.term.length) : ''
+    const after = termIdx>=0 ? r.context.slice(termIdx+r.term.length) : ''
+    return (<div key={i} style={{padding:'7px 0',borderBottom:'1px solid rgba(255,255,255,0.04)',fontSize:11,display:'flex',gap:10,alignItems:'flex-start'}}><span style={{display:'inline-flex',alignItems:'center',gap:5,fontSize:9,fontWeight:600,padding:'3px 10px',borderRadius:20,background:col+'18',color:col,border:'1px solid '+col+'33',flexShrink:0,minWidth:60,justifyContent:'center'}}>{r.term}</span><span style={{color:C.sub,lineHeight:1.5}}>...{before}<span style={{color:col,fontWeight:600}}>{matchStr}</span>{after}...</span></div>)
+  })
+
   const fmt = s => { const m=Math.floor(s/60),sec=s%60; return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0') }
 
   if (view==='login') return (
@@ -347,7 +366,7 @@ export default function QualPage() {
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:14}}>
             <div style={S.card}>
               <div style={{...S.label,marginBottom:12}}><span>Theme frequency — all sessions</span><span style={S.labelLine}/></div>
-              {Object.entries(allThemeCounts).sort(function(a,b){return b[1]-a[1]}).map(function(entry){const t=entry[0];const c=entry[1];return(<div key={t} style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}><div style={{fontSize:11,color:C.sub,width:170,flexShrink:0}}>{THEME_NAMES[t]}</div><div style={{flex:1,height:10,background:'rgba(255,255,255,0.05)',borderRadius:5,overflow:'hidden'}}><div style={{height:'100%',width:Math.round(c/maxTheme*100)+'%',background:THEME_COLORS[t],boxShadow:'0 0 4px '+THEME_COLORS[t]+'44',borderRadius:5,transition:'width 0.8s'}}/></div><div style={{fontSize:11,fontFamily:'DM Mono,monospace',color:C.text,width:24,textAlign:'right'}}>{c}</div></div>))}
+              {Object.entries(allThemeCounts).sort(function(a,b){return b[1]-a[1]}).map(function(entry){const t=entry[0];const cnt=entry[1];return(<div key={t} style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}><div style={{fontSize:11,color:C.sub,width:170,flexShrink:0}}>{THEME_NAMES[t]}</div><div style={{flex:1,height:10,background:'rgba(255,255,255,0.05)',borderRadius:5,overflow:'hidden'}}><div style={{height:'100%',width:Math.round(cnt/maxTheme*100)+'%',background:THEME_COLORS[t],borderRadius:5,transition:'width 0.8s'}}/></div><div style={{fontSize:11,fontFamily:'DM Mono,monospace',color:C.text,width:24,textAlign:'right'}}>{cnt}</div></div>)})}
             </div>
             <div style={S.card}>
               <div style={{...S.label,marginBottom:12}}><span>Theme sentiment (positive / neutral / negative)</span><span style={S.labelLine}/></div>
@@ -356,25 +375,7 @@ export default function QualPage() {
           </div>
           <div style={S.card}>
             <div style={{...S.label,marginBottom:12}}><span>Keyword-in-context (KWIC) concordance — top mentions</span><span style={S.labelLine}/></div>
-            {(() => {
-              const allText = sessions.map(s=>s.transcript).join(' ')
-              const keyTerms = ['funding','drought','wildlife','women','collateral','loan','cooperative','government','risk','insurance','planting','cultural','credit','repay']
-              const sentences = allText.split(/[.!?]+/).filter(s=>s.trim().length>15)
-              const results = []
-              keyTerms.forEach(term=>{
-                const match = sentences.find(s=>s.toLowerCase().includes(term))
-                if(match) results.push({term,context:match.trim()})
-              })
-              return results.slice(0,10).map((r,i)=>{
-                const theme = Object.entries(THEME_KEYWORDS).find(([,words])=>words.includes(r.term))
-                const col = theme?THEME_COLORS[theme[0]]:C.sub
-                const parts = r.context.split(new RegExp('('+r.term+')','gi'))
-                return (<div key={i} style={{padding:'7px 0',borderBottom:'1px solid rgba(255,255,255,0.04)',fontSize:11,display:'flex',gap:10,alignItems:'flex-start'}}>
-                  <span style={{...S.pill(col),fontSize:9,flexShrink:0,minWidth:60,justifyContent:'center'}}>{r.term}</span>
-                  <span style={{color:C.sub,lineHeight:1.5}}>...{parts.map((p,j)=>p.toLowerCase()===r.term?<span key={j} style={{color:col,fontWeight:600}}>{p}</span>:<span key={j}>{p}</span>)}...</span>
-                </div>)
-              })
-            })()}
+{kwicResults}
           </div>
           </>}
         </div>}
