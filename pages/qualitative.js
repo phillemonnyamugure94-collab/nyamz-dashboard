@@ -17,11 +17,26 @@ const ROLES = {
 const WARDS = ['Chapoto (Ward 1)','Chitsungo (Ward 10)','Masoka (Ward 11)','Gonono (Ward 4)','Mahuwe (Ward 15)']
 const ITYPES = ['KII — Government Institutions','KII — Private Financiers','KII — Associations & Researchers','KII — Development Partners','FGD — Men & Women Combined','FGD — Youth Farmers','FGD — Farmers with Disabilities']
 const TK = {
-  funding: ['fund','loan','credit','finance','bank','mfi','arda','gmb','contract','subsidy','cooperative','borrow','repay','collateral','interest'],
-  risk:    ['risk','drought','flood','loss','fail','crop','weather','climate','insurance','default','unable'],
-  gender:  ['woman','women','female','gender','wife','husband','cultural','norms','tradition','decision','power'],
-  hwc:     ['elephant','baboon','wildlife','animal','conflict','damage','destroy','fence','compensation','parks'],
-  policy:  ['government','policy','ministry','law','regulation','support','programme','extension','officer'],
+  funding: [
+    'fund','loan','credit','finance','bank','mfi','arda','gmb','contract','subsidy','cooperative','borrow','repay','collateral','interest','afford','money','capital',
+    'kufondera','chikwereti','kukwereta','mari','fondera','mibhadharo','sangano','musoro','bhadharo','kuronzera','kudzorora','chekuchengeta','kusanganisira','kuzvibata','inishuransi'
+  ],
+  risk:    [
+    'risk','drought','flood','loss','fail','crop','weather','climate','insurance','default','unable','challenge','barrier','problem','destroy',
+    'njodzi','zvinetso','nzara','mvura','kukundikana','chirimwa','mamiriro','njodzi','kukanganisa','kushaya','matambudziko','kupunza','kufanya','kutsigira','dambudziko'
+  ],
+  gender:  [
+    'woman','women','female','gender','wife','husband','cultural','norms','tradition','decision','power','access','inequality','widow',
+    'mukadzi','vakadzi','varimi','murume','varume','tsika','mutungamiriri','simba','zviradziko','mhuri','mudzimai','musikana','chigarire','pfuma'
+  ],
+  hwc:     [
+    'elephant','baboon','wildlife','animal','conflict','damage','destroy','fence','compensation','parks','herd','crop','attack','raid',
+    'nzou','gudo','mhuka','nharo','zvipukanana','kuparadza','mvura','jekicha','minda','kupedzwa','kurwiswa','danga','musango','kurwiswa'
+  ],
+  policy:  [
+    'government','policy','ministry','law','regulation','support','programme','extension','officer','subsidy','official','council','ward',
+    'hurumende','mutemo','nzira','basa','hurongwa','musangano','mudzimai','vashandi','kutonga','mabasa','kufambisa','chirongwa','dunhu','mamiriro'
+  ],
 }
 const TN = {funding:'Funding Access',risk:'Risk Perception',gender:'Gender & Vulnerability',hwc:'Human-Wildlife Conflict',policy:'Policy & Govt'}
 const TC = {funding:'#6366f1',risk:'#ef4444',gender:'#ec4899',hwc:'#f59e0b',policy:'#10b981'}
@@ -119,6 +134,7 @@ export default function QualPage() {
   const [sWard,setSWard]   = useState('')
   const [sResp,setSResp]   = useState('')
   const [processing,setProcessing] = useState(false)
+  const [srLang,setSrLang] = useState('en-ZW')
   const timerRef = useRef(null)
   const srRef    = useRef(null)
   const recRef   = useRef(null)
@@ -139,7 +155,7 @@ export default function QualPage() {
     const SR=window.SpeechRecognition||window.webkitSpeechRecognition
     if(SR){
       const sr=new SR();srRef.current=sr
-      sr.continuous=true;sr.interimResults=true;sr.lang='en-ZW'
+      sr.continuous=true;sr.interimResults=true;sr.lang=srLang
       sr.onresult=function(e){
         let interim=''
         for(let i=e.resultIndex;i<e.results.length;i++){
@@ -296,7 +312,7 @@ export default function QualPage() {
           <img src={LOGO} alt='Nyamz Analytics' style={{height:58,marginBottom:10}}/>
           <div style={{height:2,background:'linear-gradient(90deg,#6366f1,#00d4ff)',borderRadius:2,marginBottom:12}}/>
           <div style={{fontSize:12,fontWeight:600,color:C.indigo,letterSpacing:1,textTransform:'uppercase'}}>Qualitative Audio Intelligence</div>
-          <div style={{fontSize:11,color:C.dim,marginTop:3}}>KII and FGD Recording and Theme Analysis</div>
+          <div style={{fontSize:11,color:C.dim,marginTop:3}}>KII and FGD Recording — English and ChiShona</div>
         </div>
         {Object.keys(ROLES).map(function(k){
           const r=ROLES[k]
@@ -324,7 +340,7 @@ export default function QualPage() {
           <div style={{width:1,height:26,background:'rgba(255,255,255,0.08)'}}/>
           <div>
             <div style={{fontSize:13,fontWeight:700,color:C.text}}>Qualitative Audio Intelligence</div>
-            <div style={{fontSize:10,color:C.dim,marginTop:1}}>KII and FGD Recording — Mbire District PhD Study</div>
+            <div style={{fontSize:10,color:C.dim,marginTop:1}}>KII and FGD Recording — English and ChiShona — Mbire District PhD Study</div>
           </div>
         </div>
         <div style={{display:'flex',gap:8,alignItems:'center'}}>
@@ -377,6 +393,15 @@ export default function QualPage() {
                   {(isRec||seconds>0)&&<button style={S.btn(C.green)} onClick={saveSession}>Save and Analyse</button>}
                 </div>
               </div>
+              <div style={{fontSize:9,fontWeight:500,color:C.sub,textTransform:'uppercase',letterSpacing:'0.8px',marginBottom:8,marginTop:14}}>Transcription language</div>
+              <div style={{display:'flex',gap:8,marginBottom:14}}>
+                <button style={{...S.btn(srLang==='en-ZW'?C.indigo:'rgba(255,255,255,0.06)',srLang==='en-ZW'?'#fff':C.sub),flex:1,textAlign:'center'}} onClick={function(){setSrLang('en-ZW')}}>English (en-ZW)</button>
+                <button style={{...S.btn(srLang==='sn'?C.green:'rgba(255,255,255,0.06)',srLang==='sn'?'#fff':C.sub),flex:1,textAlign:'center'}} onClick={function(){setSrLang('sn')}}>ChiShona (sn)</button>
+                <button style={{...S.btn(srLang==='en-US'?C.amber:'rgba(255,255,255,0.06)',srLang==='en-US'?'#fff':C.sub),flex:1,textAlign:'center'}} onClick={function(){setSrLang('en-US')}}>English (US)</button>
+              </div>
+              <div style={{fontSize:10,color:C.dim,marginBottom:14,padding:'8px 10px',background:'rgba(16,185,129,0.06)',borderRadius:8,border:'1px solid rgba(16,185,129,0.15)'}}>
+                ChiShona mode recognises Shona speech and maps Shona keywords to research themes automatically. Switch language before starting recording.
+              </div>
               <div style={{fontSize:9,fontWeight:500,color:C.sub,textTransform:'uppercase',letterSpacing:'0.8px',marginBottom:8}}>Or upload existing audio</div>
               <label style={{display:'block',border:'1px dashed rgba(255,255,255,0.12)',borderRadius:8,padding:'14px',textAlign:'center',cursor:'pointer',color:C.sub,fontSize:12}}>
                 {processing?<span style={{color:C.cyan}}>Processing audio...</span>:<span>Click to upload MP3 / WAV / M4A</span>}
@@ -387,14 +412,14 @@ export default function QualPage() {
             <div style={S.card}>
               <div style={{fontSize:9,fontWeight:500,color:C.sub,textTransform:'uppercase',letterSpacing:'0.8px',marginBottom:10}}>Live Transcript</div>
               <div style={{background:'rgba(0,0,0,0.2)',borderRadius:8,padding:12,minHeight:160,maxHeight:220,overflowY:'auto',fontSize:12,lineHeight:1.7,color:liveText?C.text:C.dim,fontStyle:liveText?'normal':'italic',marginBottom:12,border:'1px solid rgba(255,255,255,0.05)'}}>{liveText||'Transcript appears here in real time as you speak...'}</div>
-              <div style={{fontSize:9,fontWeight:500,color:C.sub,textTransform:'uppercase',letterSpacing:'0.8px',marginBottom:8}}>Themes detected live</div>
+              <div style={{fontSize:9,fontWeight:500,color:C.sub,textTransform:'uppercase',letterSpacing:'0.8px',marginBottom:8}}>Themes detected live (English and Shona)</div>
               <div style={{minHeight:36,marginBottom:14}}>
                 {liveThemeKeys.length===0?<span style={{fontSize:11,color:C.dim,fontStyle:'italic'}}>No themes yet...</span>:
                 liveThemeKeys.map(function(t){return(<span key={t} style={S.themeTag(TC[t]||C.sub)}>{TN[t]} ({liveThemes[t]})</span>)})
                 }
               </div>
               <div style={{fontSize:9,fontWeight:500,color:C.sub,textTransform:'uppercase',letterSpacing:'0.8px',marginBottom:8}}>How it works</div>
-              {['Browser speech recognition transcribes in real time','Theme keywords matched live against 5 research domains','After saving, KWIC concordance and quotes extracted','Upload MP3/WAV for batch processing of recordings','All data exports to TXT for NVivo or manual coding'].map(function(s,i){
+              {['Supports English and ChiShona speech transcription — switch language before recording','Shona keywords mapped to all 5 research themes automatically','After saving, KWIC concordance and key quotes extracted','Upload MP3/WAV audio files for batch processing','All data exports to TXT format for NVivo or manual coding'].map(function(s,i){
                 return(<div key={i} style={{display:'flex',gap:8,fontSize:11,color:C.sub,marginBottom:4}}><span style={{color:C.indigo,fontWeight:700,flexShrink:0}}>{i+1}.</span><span>{s}</span></div>)
               })}
             </div>
