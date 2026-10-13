@@ -165,8 +165,29 @@ export default function Home() {
       q39_history:parseInt(form.q42_history)||null,
       q40_cooperation:form.q43_cooperation||null,
       q41_dwelling:form.q44_dwelling||null,
+      // === AMENDMENT 05/10/2026 — new fields ===
+      q15b_input_receipt_date:form.q15b_input_receipt_date||null,
+      q15c_first_rains_date:form.q15c_first_rains_date||null,
+      q15d_hammer_mill:form.q15d_hammer_mill||null,
+      q15e_stover_use:form.q15e_stover_use||null,
+      q15f_stover_income:form.q15f_stover_income||null,
+      q20b_land_tenure:form.q20b_land_tenure||null,
+      q20c_land_title_credit:parseInt(form.q20c_land_title_credit)||null,
+      q26b_trust2:parseInt(form.q26b_trust2)||null,
+      q26c_trust3:parseInt(form.q26c_trust3)||null,
+      q32b_ecocash_fees:parseInt(form.q32b_ecocash_fees)||null,
+      q32c_network_down:parseInt(form.q32c_network_down)||null,
+      q32d_cash_liquidity:parseInt(form.q32d_cash_liquidity)||null,
+      q37b_gmb_cardholder:form.q37b_gmb_cardholder||null,
+      q37c_cash_recipient:form.q37c_cash_recipient||null,
+      q37d_income_decision:form.q37d_income_decision||null,
+      q44b_lat:form.q44b_lat||null,
+      q44b_lon:form.q44b_lon||null,
+      q44b_acc:form.q44b_acc||null,
+      q44c_mill_verified:form.q44c_mill_verified||null,
+      q44d_audit_flag:form.q44d_audit_flag||null,
     }
-    const newCols=['q8_seedvariety','q9_prodmethod','q10_landprop','q14_pricefluc','q19_fundstage','q30_landowner','q37_cropinsurance','q39_history','q40_cooperation','q41_dwelling']
+    const newCols=['q8_seedvariety','q9_prodmethod','q10_landprop','q14_pricefluc','q19_fundstage','q30_landowner','q37_cropinsurance','q39_history','q40_cooperation','q41_dwelling','q15b_input_receipt_date','q15c_first_rains_date','q15d_hammer_mill','q15e_stover_use','q15f_stover_income','q20b_land_tenure','q20c_land_title_credit','q26b_trust2','q26c_trust3','q32b_ecocash_fees','q32c_network_down','q32d_cash_liquidity','q37b_gmb_cardholder','q37c_cash_recipient','q37d_income_decision','q44b_lat','q44b_lon','q44b_acc','q44c_mill_verified','q44d_audit_flag']
     async function tryInsert(p){
       const {data,error}=await supabase.from('responses').insert([p]).select()
       return {data,error}
@@ -327,7 +348,7 @@ export default function Home() {
         </div>}
 
         {tab==='collect'&&role!=='supervisor'&&<div style={{maxWidth:720,animation:'fadeIn 0.3s ease'}}>
-          <div style={{background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.2)',borderRadius:10,padding:'10px 14px',marginBottom:20,fontSize:12,color:C.green,fontWeight:600}}>{'All 45 questions - bilingual English and Shona. Saves to live database in real time.'}</div>
+          <div style={{background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.2)',borderRadius:10,padding:'10px 14px',marginBottom:20,fontSize:12,color:C.green,fontWeight:600}}>{'All 45 questions (+ 20 new amendment items) - bilingual English and Shona. Saves to live database in real time. Amended 05/10/2026 per Dr. Kaseke / Mkumbuzi feedback.'}</div>
           {submitStatus&&<div style={{padding:'10px 14px',borderRadius:10,marginBottom:14,fontWeight:600,fontSize:12,background:submitStatus.startsWith('error:')?'rgba(239,68,68,0.1)':'rgba(16,185,129,0.1)',color:submitStatus.startsWith('error:')?C.red:C.green,border:'1px solid '+(submitStatus.startsWith('error:')?'rgba(239,68,68,0.2)':'rgba(16,185,129,0.2)')}}>{submitStatus.replace(/^(error|success):/,'')}</div>}
           <form onSubmit={submitForm}>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,marginBottom:16,padding:14,background:'rgba(99,102,241,0.05)',borderRadius:10,border:'1px solid rgba(99,102,241,0.15)'}}>
@@ -354,6 +375,12 @@ export default function Home() {
             <QLabel qn={13} en='Primary sorghum market' sh='Ndepi panonyanya kutengesa sorghum yenyu?'/><RG id='q13_market' opts={[['gmb','GMB',''],['agro_dealer','Agro-dealer','Mutengesi'],['contract','Contract','Chibvumirano'],['local_market','Local market','Musika'],['cooperative','Cooperative','']]}/>
             <QLabel qn={14} en='Has the price of sorghum grain fluctuated significantly over the past 3 years?' sh='Mutengo wesorghum wakashanduka zvikuru mumakore matatu apfuura?'/><RG id='q14_pricefluc' opts={[['increased','Yes, increased','Hongu, wakakwira'],['decreased','Yes, decreased','Hongu, wakaburuka'],['stable','Relatively stable','Wakagara akadaro'],['variable','Highly variable','Wakashanduka zvikuru']]}/>
             <QLabel qn={15} en='Planting timing relative to ideal window' sh='Mavhiki mangani musati/mushure mekurimira kwenguva yakanaka:'/><RG id='q15_planting' opts={[['early_4plus','> 4wks early',''],['early_1_4','1-4wks early',''],['on_time','On time','Nenguva'],['late_1_4','1-4wks late',''],['late_4plus','> 4wks late','']]}/>
+            <QLabel qn='15b' en='Date input (seed/fertiliser) receipt received' sh='Zuva rakagamuchirwa masimba ezvibatanidzo (tsama/mboora):'/>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:12}}><div><label style={{fontSize:10,color:C.sub,display:'block',marginBottom:4}}>Q15b — Input receipt date / Zuva rerisiti</label><input type='date' style={S.inp} value={form.q15b_input_receipt_date||''} onChange={e=>setF('q15b_input_receipt_date',e.target.value)}/></div><div><label style={{fontSize:10,color:C.sub,display:'block',marginBottom:4}}>Q15c — First rains date / Zuva remvura yekutanga</label><input type='date' style={S.inp} value={form.q15c_first_rains_date||''} onChange={e=>setF('q15c_first_rains_date',e.target.value)}/></div></div>
+            <QLabel qn='15d' en='Nearest hammer mill name / location (for cross-reference)' sh='Zita/nzvimbo yegirinzi riri pedyo (rekuyananisira zvakachengetwa):'/>
+            <div style={{marginBottom:12}}><input style={S.inp} placeholder='e.g. Chapoto Grinding Mill — 2km north' value={form.q15d_hammer_mill||''} onChange={e=>setF('q15d_hammer_mill',e.target.value)}/></div>
+            <QLabel qn='15e' en='Primary use of sorghum stover after harvest' sh='Shandiso guru yemashanga esorghum mushure mekohwa:'/><RG id='q15e_stover_use' opts={[['sold','Sold','Kutengesa'],['livestock','Livestock feed','Kudyisa zvipfuyo'],['bioenergy','Bio-energy / cooking fuel','Huni/bioenergy'],['left_field','Left in field','Kusiyirwa mumunda'],['other','Other','Dzimwe']]}/>
+            <QLabel qn='15f' en='Does stover sale / bioenergy provide income?' sh='Kutengesa mashanga/bioenergy kunoita kuti mugamuchire mari?'/><RG id='q15f_stover_income' opts={[['yes_significant','Yes — significant income','Hongu — mari huru'],['yes_minor','Yes — minor income','Hongu — mari duku'],['no','No','Kwete']]}/>
 
             <SH bg={C.green} en='SECTION C: FUNDING MODEL ACCESS AND USAGE' sh='CHIKAMU C: KUFIKIWA NEKUSHANDISWA KWEMAMIRIRO EKUFONDERA' vars='Probit, Logit, SEM, Profile Analysis'/>
             <QLabel qn={16} en='Do you currently use any formal funding model for sorghum-related activities?' sh='Munoshandisa mamiriro ekufondera ekushandiswa pakurima sorghum iye zvino?'/><RG id='q16_usefunding' opts={[['yes','Yes','Hongu'],['no','No','Kwete']]}/>
@@ -361,6 +388,9 @@ export default function Home() {
             {form.q16_usefunding==='yes'&&<><QLabel qn={18} en='When did funding arrive relative to planting season?' sh='Kufondera kwenyu kwasvika rinhi pane nguva yekurimira?'/><RG id='q18_fundtiming' opts={[['very_early','> 4wks before','Masvondo 4+'],['early','1-4wks before',''],['on_time','Just in time','Nenguva'],['late_1_4','1-4wks late',''],['very_late','> 4wks late','']]}/></>}
             <QLabel qn={19} en='Stage of sorghum-related activities mainly funded' sh='Chikamu chesorghum painonyanya kushandiswa kufondera:'/><RG id='q19_fundstage' opts={[['production','Primary production','Kurima'],['storage','Post-harvest storage','Kuchengetwa'],['transport','Transportation','Zvitutwa'],['marketing','Marketing','Kutengesa'],['all','All stages','Zvose']]}/>
             {form.q16_usefunding==='no'&&<><QLabel qn={20} en='Main reason for NOT using formal funding (Q16=No only)' sh='Chikonzero chikuru chekusashandisa kufondera:'/><RG id='q20_barrier' opts={[['no_collateral','No collateral','Hapana chekuchengeta'],['too_far','Too far','Kure'],['high_interest','High interest','Mubhadharo murefu'],['not_aware','Not aware','Handizivi'],['prev_default','Previous default','Ndakambokutadza'],['cultural','Cultural barriers','Zviradziko'],['no_trust','No trust','Hapana kutenda']]}/></>}
+            <QLabel qn='20b' en='Land tenure status (collateral interaction variable)' sh='Mamiriro ekushandisa nyika (variable yekubatana nekukwetewa):'/>
+            <RG id='q20b_land_tenure' opts={[['title_deed','Title deed / Formal title','Dhidhi Retara'],['communal','Communal / Council permit','Nyika yemuno'],['leasehold','State leasehold','Kukodhesha kubva kuhurumende'],['offer_letter','Offer letter / Permit','Tsamba yekupa'],['informal','Informal occupation','Kubatikana kwetsvimbo']]}/>
+            <LK id='q20c_land_title_credit' qn='Q20c' en='Having a formal land title makes it easier for me to access credit.' sh='Kuva nedhidhi retara rezviri pamutemo kunoita nyore kuwana chikwereti changu.'/>
 
             <SH bg={C.cyan} en='SECTION D: RISK PERCEPTION (Likert Scale 1-5)' sh='CHIKAMU D: MAONERO PAMUSORO PEZVINETSO (Likert 1-5)' vars='SEM Latent Constructs, SmartPLS, Factor Analysis, Cronbach Alpha'/>
             <LK id='q21_drought' qn='Q21' en='Drought is the biggest risk to my sorghum farming.' sh='Njodzi yezuva rakachena ndiyo njodzi huru yekundirima sorghum kwangu.'/>
@@ -370,6 +400,8 @@ export default function Home() {
             <LK id='q25_price' qn='Q25' en='Price fluctuations of sorghum make it risky to use funding models.' sh='Kushanduka kwemutengo wesorghum kunoita kuve njodzi kushandisa mamiriro ekufondera.'/>
             <LK id='q26_trust' qn='Q26' en='I trust the funding institutions operating in Mbire District.' sh='Ndinovimba nemanyanga ekufondera ashanda muDunhu reMbire.'/>
             <LK id='q27_govt' qn='Q27' en='Government support programs adequately protect farmers from financial risk.' sh='Hurongwa hwehurumende hunochengeta zvakanaka varimi kubva kuzvinetso zvemari.'/>
+            <LK id='q26b_trust2' qn='Q26b' en='Funding institutions in Mbire District handle my application fairly and transparently.' sh='Manyanga ekufondera muDunhu reMbire anobata chikumbiro changu neururami uye pachena.'/>
+            <LK id='q26c_trust3' qn='Q26c' en='I believe funding institutions will honour their commitments if I repay on time.' sh='Ndinobvuma kuti manyanga ekufondera achaita zvavakavimbisa kana ndikaripei nenguva.'/>
 
             <SH bg={C.amber} en='SECTION E: SOCIAL CAPITAL AND INFORMATION ACCESS' sh='CHIKAMU E: PFUMA YEMUMUSHA AND KUFIKIWA KWERUZIVO' vars='SEM Latent Constructs, Probit, SmartPLS'/>
             <LK id='q28_coop' qn='Q28' en='I am a member of a farmer cooperative or savings group.' sh='Ndiri nhengo yesangano revarimi kana boka rechengetero.'/>
@@ -377,6 +409,9 @@ export default function Home() {
             <LK id='q30_community' qn='Q30' en='My neighbours and community share knowledge about funding opportunities.' sh='Vavakidzani vangu nemumusha vanogovana ruzivo pamusoro pezvidziviriro zvekufondera.'/>
             <LK id='q31_mobile' qn='Q31' en='I have access to a mobile phone for farming-related information.' sh='Ndine foni yepamaoko yekuwana ruzivo rwekurima.'/>
             <LK id='q32_digital' qn='Q32' en='I have heard of or accessed credit through WhatsApp or digital platforms.' sh='Ndakunzwa kana kuwana chikwereti kuburikidza neWhatsApp kana nzvimbo dzedijitari.'/>
+            <LK id='q32b_ecocash_fees' qn='Q32b' en='EcoCash / mobile money transaction fees are a barrier to using digital financial services.' sh='Mibhadharo yeEcoCash/mobile money inodzvanya kushandisa masevhisi emari edijitari.'/>
+            <LK id='q32c_network_down' qn='Q32c' en='Network downtime in my area prevents me from completing digital financial transactions.' sh='Kudoroka kwenetwork munzvimbo yangu kunokanganisa kupedza zvigadzirwa zvemari edijitari.'/>
+            <LK id='q32d_cash_liquidity' qn='Q32d' en='Cash-out shortages at local EcoCash agents create problems when I need cash from my account.' sh='Kushomeka kwemari kune maejenti eEcoCash epedyo kunoundira matambudziko ndichida mari kubva paakaunti yangu.'/>
 
             <SH bg={C.violet} en='SECTION F: GENDER AND VULNERABILITY INDICATORS' sh='CHIKAMU F: BATO REMURUME/MUKADZI AND ZVIRATIDZO ZEKUSHAYIWA SIMBA' vars='Gender Disaggregation, Female Targeting Module, SEM Subgroup'/>
             <QLabel qn={33} en='Do you own the land you farm on?' sh='Munave nenyika yamunorima?'/><RG id='q33_landowner' opts={[['yes_full','Yes, fully','Hongu, zvizere'],['yes_joint','Yes, jointly','Hongu, pamwe'],['rented','No, rented','Kwete, kukodesha'],['communal','No, communal','Kwete, yemuno']]}/>
@@ -384,6 +419,9 @@ export default function Home() {
             <LK id='q35_cultural' qn='Q35' en='Cultural norms in my community prevent women from applying for loans.' sh='Tsika dzemumusha dzangu dzinodzvanya vakadzi kubva kushambadzira zvikwereti.'/>
             <LK id='q36_femproduct' qn='Q36' en='I would use a funding model designed specifically for women farmers.' sh='Ndaishandisa mamiriro ekufondera akagadzirwa kunyanya kuvarimi vakadzi.'/>
             <LK id='q37_femdecision' qn='Q37' en='Female farmers in my area have less decision-making power over farm finances (including borrowing and post marketing).' sh='Varimi vakadzi munzvimbo yangu vane simba diki rekusarudza pamusoro pemari yemunda (kusanganisira kukwereta nekutengesa mushure mekohwa).'/>
+            <QLabel qn='37b' en='Who holds the GMB marketing card for your household?' sh='Ndiani ane kadhi reGMB rekunyoresera pamba penyu?'/><RG id='q37b_gmb_cardholder' opts={[['male_hh_head','Male HH head','Murume mutungamiriri'],['female_hh_head','Female HH head','Mukadzi mutungamiriri'],['joint','Joint','Pamwe chete'],['other_male','Other male relative','Murume wechokwadi'],['other_female','Other female relative','Mukadzi wechokwadi']]}/>
+            <QLabel qn='37c' en='Who physically receives the cash / EcoCash from GMB sorghum sales?' sh='Ndiani angagashira mari/EcoCash kubva pakutengesa sorghum kuGMB?'/><RG id='q37c_cash_recipient' opts={[['male_hh_head','Male HH head','Murume mutungamiriri'],['female_hh_head','Female HH head','Mukadzi mutungamiriri'],['joint','Both together','Vaviri pamwechete'],['other','Other','Mumwe munhu']]}/>
+            <QLabel qn='37d' en='Who decides how the income from sorghum sales is used?' sh='Ndiani anosarudza mashandisirwo ari nemari inobva pakutengesa sorghum?'/><RG id='q37d_income_decision' opts={[['male_hh_head','Male HH head','Murume mutungamiriri'],['female_hh_head','Female HH head','Mukadzi mutungamiriri'],['joint','Joint decision','Sarudzo pamwechete'],['other','Other','Mumwe munhu']]}/>
 
             <SH bg='#0891B2' en='SECTION G: FRAMEWORK AND STRATEGY PREFERENCES' sh='CHIKAMU G: ZVAKAFARIRWA PAMUSORO PECHIMIRO AND NZIRA' vars='Framework Development (Obj 4), Candidate Portfolio, Model Prediction'/>
             <LK id='q38_bundled' qn='Q38' en='A combined funding package (input subsidy + crop insurance + loan) would reduce my farming risk.' sh='Pfungswa yakasanganiswa yefondera (tsigiro yezvirimwa + inishuransi yechirimwa + chikwereti) yaizopunza njodzi yangu yekurima.'/>
@@ -395,6 +433,10 @@ export default function Home() {
             <SH bg='#374151' en='SECTION H: ENUMERATOR OBSERVATIONS' sh='CHIKAMU H: ZVAKACHERECHEDZWA NEMUVERENGERI' vars='Data quality control - completed by enumerator only'/>
             <QLabel qn={43} en='Was the respondent cooperative and engaged throughout?' sh='Mubvunzwi akabatikana uye akashirikira munzira yese?'/><RG id='q43_cooperation' opts={[['yes','Yes','Hongu'],['partial','Partially','Zvimwe'],['no','No','Kwete']]}/>
             <QLabel qn={44} en='Observed dwelling condition' sh='Mamiriro aakaona ekugara:'/><RG id='q44_dwelling' opts={[['good','Good','Akanaka'],['average','Average','Pakati'],['poor','Poor','Akaipa']]}/>
+            <QLabel qn='44b' en='GPS coordinates at interview start (mandatory)' sh='GPS coordinates pakutanga kubvunza (inodiwa):'/>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,marginBottom:12}}><div><label style={{fontSize:10,color:C.sub,display:'block',marginBottom:4}}>Latitude</label><input style={S.inp} placeholder='-16.1234' value={form.q44b_lat||''} onChange={e=>setF('q44b_lat',e.target.value)}/></div><div><label style={{fontSize:10,color:C.sub,display:'block',marginBottom:4}}>Longitude</label><input style={S.inp} placeholder='30.2345' value={form.q44b_lon||''} onChange={e=>setF('q44b_lon',e.target.value)}/></div><div><label style={{fontSize:10,color:C.sub,display:'block',marginBottom:4}}>Accuracy (m)</label><input style={S.inp} placeholder='±5m' value={form.q44b_acc||''} onChange={e=>setF('q44b_acc',e.target.value)}/></div></div>
+            <QLabel qn='44c' en='Hammer mill cross-reference verified against logbook?' sh='Girinzi rakayananisirwa nelogbook?'/><RG id='q44c_mill_verified' opts={[['verified','Verified — matches logbook','Yakayananisirwa'],['not_verified','Not verified — no logbook access','Isina kuyananisirwa'],['na','N/A — farmer does not use mill','Haina kubata']]}/>
+            <QLabel qn='44d' en='Day-3 zero-variance audit status (for supervisor review)' sh='Mamiriro ekuyeresa kusiyana-siyana pazuva rechitatu (supervisor aone):'/><RG id='q44d_audit_flag' opts={[['clean','Clean — no flags','Isina chirevo'],['flag_review','Flagged — under review','Yakaburitswa — ichionekwa'],['flag_retrain','Flagged — enumerator retrained','Yakaburitswa — muverengeri adzidziswa zvakare']]}/>
             <div style={{marginTop:10}}><label style={{fontSize:11,fontWeight:600,color:C.text,display:'block',marginBottom:5}}>Q45. Enumerator code / Kodhi yemuverengeri</label><input style={S.inp} placeholder='e.g. ENUM-W1-001' value={form.enumerator_code||''} onChange={e=>setF('enumerator_code',e.target.value)}/></div>
             <button type='submit' style={{...S.btn(C.indigo),width:'100%',padding:13,fontSize:14,borderRadius:12,marginTop:10}}>Submit Response / Tumira Mhinduro</button>
           </form>
